@@ -1,0 +1,147 @@
+
+export class BasicHashbeltMap ::
+  // BasicHashbeltMap
+  //   options: @{}
+  //     create  --  function that returns a Map-compatible object,
+  //                 implementing has(), get(), set(), delete(), entries(), and clear()
+  //     tip     --  initial Map-compatible object to use as the tip
+
+  constructor(opts) ::
+    if null == opts :: opts = {}
+    else if 'function' === typeof opts ::
+      opts = @: create: opts
+
+    const createTip = 'function' === typeof opts.create
+      ? opts.create.bind(opts)
+      : () => new Map()
+
+    const tip = null != opts.tip
+      ? opts.tip : createTip()
+
+    Object.defineProperties @ this, @:
+        _createTip: @: value: createTip
+      , _belt: @: writable: true, value: [tip]
+      , _tid: @: writable: true, value: null
+
+
+  setAutoRotateInterval(ms_delay) ::
+    if this._tid :: clearInterval(this._tid)
+    if null != ms_delay ::
+      const tid = setInterval @ () => this.rotate(), ms_delay
+      if 'function' === typeof tid.unref ::
+        tid.unref()
+      this._tid = tid
+    return this
+
+  rotate() ::
+    this._belt = this._cull_hashbelt @
+      [this._createTip()]
+        .concat @ this._belt
+    return this
+
+  _cull_hashbelt(belt) :: return belt
+
+
+
+  has(key) ::
+    for const each of this._belt ::
+      if each.has(key) ::
+        this._hit_has(key, each)
+        return true
+    return false
+
+  _hit_has(key, coll) ::
+
+
+  get(key) ::
+    for const each of this._belt ::
+      if each.has(key) ::
+        const value = each.get(key)
+        this._hit_get(key, value, each)
+        return value
+
+  _hit_get(key, value, coll) ::
+
+
+  set(key, value) ::
+    const tip = this._belt[0]
+    this._hit_set(key, value, tip)
+    tip.set(key, value)
+    return this
+
+  _hit_set(key, value, coll) ::
+
+
+  delete(key) ::
+    for const each of this._belt ::
+      if each.has(key) ::
+        this._hit_delete(key, each)
+        return each.delete(key)
+    return false
+
+  _hit_delete(key, coll) ::
+
+
+
+  clear() ::
+    const previous = this._belt
+    this._belt = [new this._createTip()]
+
+    if previous ::
+      for const each of previous ::
+        each.clear()
+
+
+  *entries() ::
+    const seen = new Set()
+    let sz = seen.size
+
+    for const each of this._belt ::
+      for const entry of each.entries() ::
+        seen.add(entry[0])
+        if sz !== seen.size ::
+          sz = seen.size
+          yield entry
+
+  [Symbol.iterator]() ::
+    return this.entries()
+  *keys() ::
+    for const entry of this.entries() ::
+      yield entry[0]
+  *values() ::
+    for const entry of this.entries() ::
+      yield entry[1]
+  forEach(callback, thisArg) ::
+    return new Map(this.entries()).forEach(callback, thisArg)
+
+
+
+export class HashbeltMap extends BasicHashbeltMap ::
+  constructor(opts) ::
+    if null == opts :: opts = {}
+    super(opts)
+    Object.defineProperties @ this, @:
+        capacity: @: value: opts.capacity || 5
+
+  _cull_hashbelt(belt) ::
+    const capacity = this.capacity
+    if null != capacity ::
+      belt = belt.slice @ 0, this.capacity
+    return belt
+
+  autoRotate(ms_delay=60000) ::
+    return this.setAutoRotateInterval(ms_delay)
+
+export const Hashbelt = HashbeltMap
+
+
+
+export class ReadCachingHashbeltMap extends HashbeltMap ::
+  _hit_get(key, value, coll) ::
+    // copy the hit to the front of the cache
+    const tip = this._belt[0]
+    tip.set(key, value)
+    
+export const CachingHashbeltMap = ReadCachingHashbeltMap
+export const CachingHashbelt = ReadCachingHashbeltMap
+

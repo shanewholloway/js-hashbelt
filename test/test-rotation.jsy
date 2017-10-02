@@ -1,0 +1,35 @@
+const testModule = require('../dist') // require('hashbelt')
+
+export default function(tap) ::
+
+  tap.test @ `rotation should work`, t => ::
+    const coll = new testModule.CachingHashbeltMap ()
+    _gen_rotated_entries @ coll
+
+    const entries = Array.from @ coll.entries(), kv => kv.join(' -- ')
+    t.deepEqual @ entries, @[]
+        'a0 -- a zero'
+      , 'b0 -- b zero'
+      , 'a1 -- a one'
+      , 'c0 -- c zero'
+      , 'b1 -- b one'
+      , 'd0 -- d zero'
+      , 'c1 -- c one'
+      , 'e0 -- e zero'
+      , 'd1 -- d one'
+
+
+
+function _gen_rotated_entries(coll, keys) ::
+  if null == keys ::
+    keys = 'a b c d e f g h i j k'.split(/\s+/)
+
+  keys = Array.from(keys).reverse()
+  for const k of keys ::
+    coll.set @ `${k}0`, `${k} zero`
+    coll.set @ `${k}1`, `${k} one`
+    coll.rotate()
+    coll.get @ `${k}0`
+
+  return coll
+

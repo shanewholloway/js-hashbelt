@@ -1,0 +1,13 @@
+require('source-map-support').install()
+
+const testModule = require('../dist') // require('hashbelt')
+
+const tap = require('tap-lite-tester')
+tap.start()
+
+if 1 ::
+  require('./test-basics.jsy').default @ tap
+  require('./test-rotation.jsy').default @ tap
+
+tap.finish()
+

@@ -1,0 +1,39 @@
+{
+  "name": "hashbelt",
+  "version": "0.1.0",
+  "description": "Map data structure variant \"with aging to expire items\"",
+  "license": "BSD-2-Clause",
+  "author": "Shane Holloway <shane.holloway@ieee.org>",
+  "homepage": "https://github.com/shanewholloway/js-hashbelt#readme",
+  "bugs": {
+    "url": "https://github.com/shanewholloway/js-hashbelt/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/shanewholloway/js-hashbelt.git"
+  },
+  "keywords": [
+    "hashbelt"
+  ],
+  "files": [
+    "dist/",
+    "code/",
+    "test/"
+  ],
+  "main": "dist/index.js",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-jsy": "^0.8.1",
+    "tap-lite-tester": "^0.5.2"
+  },
+  "babel": {
+    "presets": "jsy/lean"
+  },
+  "scripts": {
+    "build": "babel -s inline -x .js,.jsy code -d dist",
+    "watch": "npm -s run build -- --watch",
+    "prepublish": "npm -s run test",
+    "pretest": "npm -s run build",
+    "test": "babel-node ./test/test.jsy"
+  }
+}
