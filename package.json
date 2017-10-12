@@ -23,7 +23,7 @@
   "main": "dist/index.js",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-jsy": "^0.8.1",
+    "babel-preset-jsy": "^0.9.0",
     "tap-lite-tester": "^0.5.2"
   },
   "babel": {

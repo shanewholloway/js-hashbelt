@@ -19,9 +19,9 @@ export class BasicHashbeltMap ::
       ? opts.tip : createTip()
 
     Object.defineProperties @ this, @:
-        _createTip: @: value: createTip
-      , _belt: @: writable: true, value: [tip]
-      , _tid: @: writable: true, value: null
+      _createTip: @: value: createTip
+      _belt: @: writable: true, value: [tip]
+      _tid: @: writable: true, value: null
 
 
   setAutoRotateInterval(ms_delay) ::
