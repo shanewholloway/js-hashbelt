@@ -48,9 +48,11 @@ export class BasicHashbeltMap ::
       if each.has(key) ::
         this._hit_has(key, each)
         return true
-    return false
+
+    return !! this._miss_has(key)
 
   _hit_has(key, coll) ::
+  _miss_has(key) ::
 
 
   get(key) ::
@@ -59,8 +61,10 @@ export class BasicHashbeltMap ::
         const value = each.get(key)
         this._hit_get(key, value, each)
         return value
+    return this._miss_get(key)
 
   _hit_get(key, value, coll) ::
+  _miss_get(key) ::
 
 
   set(key, value) ::
@@ -77,9 +81,11 @@ export class BasicHashbeltMap ::
       if each.has(key) ::
         this._hit_delete(key, each)
         return each.delete(key)
-    return false
+
+    return !! this._miss_delete(key)
 
   _hit_delete(key, coll) ::
+  _miss_delete(key) ::
 
 
 
@@ -141,7 +147,7 @@ export class ReadCachingHashbeltMap extends HashbeltMap ::
     // copy the hit to the front of the cache
     const tip = this._belt[0]
     tip.set(key, value)
-    
+
 export const CachingHashbeltMap = ReadCachingHashbeltMap
 export const CachingHashbelt = ReadCachingHashbeltMap
 
