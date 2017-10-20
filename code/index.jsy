@@ -151,3 +151,6 @@ export class ReadCachingHashbeltMap extends HashbeltMap ::
 export const CachingHashbeltMap = ReadCachingHashbeltMap
 export const CachingHashbelt = ReadCachingHashbeltMap
 
+export default function createCachingHashbelt(opts) ::
+  return new ReadCachingHashbeltMap @ opts
+
