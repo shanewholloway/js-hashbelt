@@ -1,6 +1,6 @@
 require('source-map-support').install()
 
-const testModule = require('../dist') // require('hashbelt')
+const testModule = require('../dist/hashbelt') // require('hashbelt')
 
 const tap = require('tap-lite-tester')
 tap.start()

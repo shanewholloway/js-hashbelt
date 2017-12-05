@@ -1,4 +1,4 @@
-const testModule = require('../dist') // require('hashbelt')
+const testModule = require('../dist/hashbelt') // require('hashbelt')
 
 export default function(tap) ::
 

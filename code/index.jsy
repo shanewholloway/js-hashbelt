@@ -28,8 +28,7 @@ export class BasicHashbeltMap ::
     if this._tid :: clearInterval(this._tid)
     if null != ms_delay ::
       const tid = setInterval @ () => this.rotate(), ms_delay
-      if 'function' === typeof tid.unref ::
-        tid.unref()
+      if tid.unref :: tid.unref()
       this._tid = tid
     return this
 
@@ -131,9 +130,12 @@ export class HashbeltMap extends BasicHashbeltMap ::
 
   _cull_hashbelt(belt) ::
     const capacity = this.capacity
-    if null != capacity ::
-      belt = belt.slice @ 0, this.capacity
+    if null != capacity && capacity < belt.length ::
+      const trim = belt.slice(capacity)
+      belt = belt.slice(0, capacity)
+      this._trim @ trim, belt
     return belt
+  _trim(belt_trunc) ::
 
   autoRotate(ms_delay=60000) ::
     return this.setAutoRotateInterval(ms_delay)
