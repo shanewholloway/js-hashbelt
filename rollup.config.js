@@ -1,34 +1,23 @@
-import pkg from './package.json'
-import {minify} from 'uglify-es'
-import rpi_uglify from 'rollup-plugin-uglify'
-import rpi_babel from 'rollup-plugin-babel'
+import { terser as rpi_terser } from 'rollup-plugin-terser' // if you want minification
 
-const sourcemap = 'inline'
-const plugins = [jsy_plugin()]
-const ugly = { compress: {warnings: false}, output: {comments: false}, sourceMap: false }
-const prod_plugins = plugins.concat([rpi_uglify(ugly, minify)])
+const _cfg_ = { plugins: [] }
+
+// Allow Minification -- https://github.com/TrySound/rollup-plugin-terser
+let is_watch = process.argv.includes('--watch')
+const _cfg_min_ = is_watch || 'undefined'===typeof rpi_terser ? null
+  : { ... _cfg_, plugins: [ ... _cfg_.plugins, rpi_terser() ]}
 
 export default [
-	{ input: 'code/index.jsy',
-		output: [
-      { file: pkg.main, format: 'cjs', exports: 'named' },
-      { file: pkg.module, format: 'es' },
-    ],
-    sourcemap, external:[], plugins },
+	{ ..._cfg_, input: 'code/hashbelt.js', output: [
+      { file: 'esm/hashbelt.js', format: 'es'},
+      { file: 'cjs/hashbelt.cjs', format: 'cjs', exports: 'named' },
+      { file: 'umd/hashbelt.js', format: 'umd', exports: 'named', name: 'hashbelt' },
+  ]},
 
-	{ input: 'code/index.jsy', name: pkg.name,
-		output: [
-      { file: pkg.browser, format: 'umd', exports: 'named' },
-    ],
-    external:[], plugins: prod_plugins },
-]
+	_cfg_min_ && { ..._cfg_min_, input: 'code/hashbelt.js', output: [
+      { file: 'esm/hashbelt.min.js', format: 'es'},
+      { file: 'umd/hashbelt.min.js', format: 'umd', exports: 'named', name: 'hashbelt' },
+  ]},
 
-
-function jsy_plugin() {
-  const jsy_preset = [ 'jsy/lean', { no_stage_3: true, modules: false } ]
-  return rpi_babel({
-    exclude: 'node_modules/**',
-    presets: [ jsy_preset ],
-    plugins: [],
-    babelrc: false }) }
+].filter(Boolean)
 
