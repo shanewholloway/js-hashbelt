@@ -1,6 +1,6 @@
 {
   "name": "hashbelt",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "description": "Data structure variant \"with aging to expire items\"",
   "license": "BSD-2-Clause",
   "author": "Shane Holloway <shane.holloway@ieee.org>",
